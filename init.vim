@@ -23,13 +23,26 @@ set relativenumber
 " set colorcolumn=80
 " highlight ColorColumn ctermbg=0 guibg=lightgrey
 
-call plug#begin('C:/Users/Ed/.vim/plugged')
+" call plug#begin('C:/Users/Ed/.vim/plugged') " windows
+call plug#begin('/home/ed/.vim/plugged') " linux
 Plug 'morhetz/gruvbox'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'mbbill/undotree'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 call plug#end()
+
+" add tab navigation to COC intellisense
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+inoremap <silent><expr> <TAB>
+            \ pumvisible() ? "\<C-n>" :
+            \ <SID>check_back_space() ? "\<TAB>" :
+            \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <silent><expr> <C-space> coc#refresh()
 
 let mapleader = " "
 
