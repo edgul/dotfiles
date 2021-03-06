@@ -19,6 +19,9 @@ set termguicolors
 set scrolloff=8
 set noshowmode
 set relativenumber
+set hlsearch
+set cursorline
+set matchpairs+=<:>
 
 " set colorcolumn=80
 " highlight ColorColumn ctermbg=0 guibg=lightgrey
@@ -30,6 +33,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'mbbill/undotree'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'airblade/vim-rooter'
 call plug#end()
 
 " add tab navigation to COC intellisense
@@ -49,6 +53,7 @@ let mapleader = " "
 " Copy/paste from clipboard
 noremap <Leader>y "*y
 noremap <Leader>p "*p
+noremap <Leader>x "*c
 noremap <Leader>Y "+y
 noremap <Leader>P "+p
 
@@ -74,6 +79,11 @@ vnoremap X "_d
 nnoremap <Leader>= :vertical resize +5<CR>
 nnoremap <Leader>- :vertical resize -5<CR>
 
+" switch between header/source
+nnoremap <Leader>oc :e %<.c<CR>
+nnoremap <Leader>oi :e %<.cpp<CR>
+nnoremap <Leader>oh :e %<.h<CR>
+
 " GoTo code navigation.
 nmap <leader>gd <Plug>(coc-definition)
 nmap <leader>gy <Plug>(coc-type-definition)
@@ -86,6 +96,45 @@ nmap <silent> <leader>gp <Plug>(coc-diagnostic-prev-error)
 nmap <silent> <leader>gn <Plug>(coc-diagnostic-next-error)
 nnoremap <leader>cr :CocRestart <CR>
 nnoremap <leader>prw :CocSearch <C-R>=expand("<cword>")<CR><CR>
+
+nmap <leader>f :Ag <CR>
+
+" select all
+nnoremap <leader>a ggVG
+
+"Function for commenting a block of Visually selected text
+function Comment(fl, ll)
+  let i=a:fl
+  let comment="//"
+  while i<=a:ll
+    let cl=getline(i)
+    let cl2=comment.cl
+    call setline(i, cl2)
+    let i=i+1
+  endwhile
+endfunction
+
+"Function for Un-Commenting a block of Visually selected text
+function UnComment(fl, ll)
+  let i=a:fl
+  let comment="//"
+  while i<=a:ll
+    let cl=getline(i)
+    let cl2=substitute(cl, "//", "", "")
+    call setline(i, cl2)
+    let i=i+1
+  endwhile
+endfunction
+
+nnoremap <leader>/ :call Comment(".",".")<CR>
+vnoremap <leader>/ :call Comment(".",".")<CR>
+nnoremap <leader>' :call UnComment(".",".")<CR>
+vnoremap <leader>' :call UnComment(".",".")<CR>
+
+" brackets helpers
+inoremap {<cr> {<cr>}<c-o>O
+inoremap [<cr> [<cr>]<c-o>O
+inoremap (<cr> (<cr>)<c-o>O
 
 autocmd vimenter * colorscheme gruvbox
 cd ~
